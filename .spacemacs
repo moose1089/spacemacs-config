@@ -313,11 +313,12 @@ you should place your code here."
   (define-key global-map (kbd "C-+") 'text-scale-increase)
   (define-key global-map (kbd "C--") 'text-scale-decrease)
 
-  ;; jr0cket: smartparens keybindings
-  (define-key global-map (kbd "C-)") 'sp-forward-slurp-sexp)
-  (define-key global-map (kbd "C-(") 'sp-backward-slurp-sexp)
-  (define-key global-map (kbd "M-)") 'sp-forward-barf-sexp)
-  (define-key global-map (kbd "M-(") 'sp-backward-barf-sexp)
+  ;; smartparens keybindings
+  (define-key global-map (kbd "<C-f12>") 'sp-forward-slurp-sexp)
+  (define-key global-map (kbd "<C-f11>") 'sp-backward-slurp-sexp)
+  (define-key global-map (kbd "<M-f12>") 'sp-forward-barf-sexp)
+  (define-key global-map (kbd "<M-f11>") 'sp-backward-barf-sexp)
+
   ;; jr0cket: keybindings for cycling buffers
   (global-set-key [C-prior] 'previous-buffer)
   (global-set-key [C-next] 'next-buffer)

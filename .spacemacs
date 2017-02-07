@@ -335,6 +335,10 @@ you should place your code here."
   (global-set-key (kbd "C-M-h") 'backward-kill-word)
 
 
+  (define-key global-map (kbd "<S-down-mouse-1>") 'mouse-save-then-kill)
+
+
+
  ;; define function to shutdown emacs server instance
   (defun server-shutdown ()
   "Save buffers, Quit, and Shutdown (kill) server"

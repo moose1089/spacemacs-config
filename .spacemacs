@@ -31,6 +31,8 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     go
+     markdown
      javascript
      html
      ;; ----------------------------------------------------------------
@@ -142,7 +144,7 @@ values."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Consolas"
-                               :size 14
+                               :size 16
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -310,7 +312,8 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
    (menu-bar-mode 1)
    (global-prettify-symbols-mode 1)
-
+   (global-linum-mode)
+   
    ;; jr0cket: text scaling keybindings
   (define-key global-map (kbd "C-+") 'text-scale-increase)
   (define-key global-map (kbd "C--") 'text-scale-decrease)
@@ -320,6 +323,7 @@ you should place your code here."
   (define-key global-map (kbd "<C-f11>") 'sp-backward-slurp-sexp)
   (define-key global-map (kbd "<M-f12>") 'sp-forward-barf-sexp)
   (define-key global-map (kbd "<M-f11>") 'sp-backward-barf-sexp)
+  (define-key global-map (kbd "C-]") 'sp-unwrap-sexp)
 
   ;; jr0cket: keybindings for cycling buffers
   (global-set-key [C-prior] 'previous-buffer)
@@ -348,6 +352,9 @@ you should place your code here."
   (save-some-buffers)
   (kill-emacs)
   )
+
+  (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
+  
 
 
     (cua-mode t)

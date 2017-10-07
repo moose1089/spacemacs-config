@@ -354,28 +354,29 @@ you should place your code here."
   )
 
   (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
-  
 
+  (cua-mode t)
+  (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+  (transient-mark-mode 1) ;; No region when it is not highlighted
+  (setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
 
-    (cua-mode t)
-    (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
-    (transient-mark-mode 1) ;; No region when it is not highlighted
-    (setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+  ;; cycle through buffers with Ctrl-Tab (like Firefox)
+  (global-set-key (kbd "<C-tab>") 'bury-buffer)
 
-   ;; cycle through buffers with Ctrl-Tab (like Firefox)
-   (global-set-key (kbd "<C-tab>") 'bury-buffer)
+  (global-set-key (kbd "<C-f4>") 'kill-this-buffer)
+  (global-set-key (kbd "<M-f4>") 'save-buffers-kill-terminal)
+  (global-set-key (kbd "C-a") 'mark-whole-buffer)
+  (global-set-key (kbd "C-w") 'kill-this-buffer)
+  (global-set-key (kbd "C-n") 'spacemacs/new-empty-buffer)
+  (global-set-key (kbd "C-o") 'ido-find-file)
+  (global-set-key (kbd "C-s") 'save-buffer)
+  (global-set-key (kbd "C-y") 'redo)
+  (global-set-key (kbd "C-z") 'undo)
 
-   (global-set-key (kbd "<C-f4>") 'kill-this-buffer)
-   (global-set-key (kbd "<M-f4>") 'save-buffers-kill-terminal)
-   (global-set-key (kbd "C-a") 'mark-whole-buffer)
-   (global-set-key (kbd "C-w") 'kill-this-buffer)
-   (global-set-key (kbd "C-n") 'spacemacs/new-empty-buffer)
-   (global-set-key (kbd "C-o") 'ido-find-file)
-   (global-set-key (kbd "C-s") 'save-buffer)
-   (global-set-key (kbd "C-y") 'redo)
-   (global-set-key (kbd "C-z") 'undo)
+   (define-key cider-mode-map (kbd "<M-RET>=") 'cider-format-defun)
+   (define-key cider-mode-map (kbd "<M-RET>fd") 'cider-format-defun)
+   (define-key cider-mode-map (kbd "<f12>") 'cider-eval-defun-at-point)
 
-   
    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;; one line at a time
 
 )
@@ -390,7 +391,7 @@ you should place your code here."
  '(evil-toggle-key "C-`")
  '(package-selected-packages
    (quote
-    (web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data smeargle orgit org mwim magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor company-statistics company clojure-snippets clj-refactor inflections edn multiple-cursors paredit peg cider-eval-sexp-fu cider queue clojure-mode auto-yasnippet yasnippet ac-ispell auto-complete ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme))))
+    (web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data smeargle orgit org mwim magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor company-statistics company clojure-snippets clj-refactor inflections edn multiple-cursors paredit peg cider-eval-sexp-fu cider queue clojure-mode auto-yasnippet yasnippet ac-ispell auto-complete ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme go-autocomplete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

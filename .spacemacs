@@ -31,6 +31,9 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     nginx
+     typescript
+     yaml
      rust
     ;; csv
      sql
@@ -42,6 +45,7 @@ values."
      markdown
      javascript
      html
+     common-lisp
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -59,7 +63,7 @@ values."
        git-enable-github-support t
        git-gutter-use-fringe t) 
      ;; markdown
-     ;; org
+     org
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
@@ -71,7 +75,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(neotree string-inflection)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -318,14 +322,24 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (menu-bar-mode 1)
+
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
   (setq clojure-enable-fancify-symbols t)
   (global-prettify-symbols-mode 1)
+  (setq org-log-done 'time)
+  (setq org-todo-keywords '((sequence "TODO" "REVIEW" "|" "DONE")))
+
+  ;(setq cljr-inject-dependencies-at-jack-in nil)
+
 ;   (global-linum-mode)
    
    ;; jr0cket: text scaling keybindings
   (define-key global-map (kbd "C-+") 'text-scale-increase)
   (define-key global-map (kbd "C--") 'text-scale-decrease)
+
+  ;; Cycle case
+  (global-set-key (kbd "C-`") 'string-inflection-all-cycle)
+  (global-set-key (kbd "C-#") 'string-inflection-lisp)
 
   ;; smartparens keybindings
   (define-key global-map (kbd "<C-f12>") 'sp-forward-slurp-sexp)
@@ -349,12 +363,17 @@ you should place your code here."
   (define-key isearch-mode-map (kbd
                                 "C-f") 'isearch-repeat-forward)
 
+  (set-fill-column 60)
+
   ;; You know, like Readline.
   (global-set-key (kbd "C-M-h") 'backward-kill-word)
 
 
   (define-key global-map (kbd "<S-down-mouse-1>") 'mouse-save-then-kill)
 
+  ;; turn off overwrite mode
+  (define-key global-map [(insert)] nil)
+  (define-key global-map [(control insert)] 'overwrite-mode)
 
 ;;  (define-key global-map (kbd "<M-RET>=") 'cider-format-defun)
   (define-key global-map (kbd "<M-RET>fd") 'cider-format-defun)
@@ -372,30 +391,69 @@ you should place your code here."
   (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
   (ws-butler-global-mode)
 
-    (cua-mode t)
-    (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
-    (transient-mark-mode 1) ;; No region when it is not highlighted
-    (setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+  (defun transpose-buffers (arg)
+    "Transpose the buffers shown in two windows."
+    (interactive "p")
+    (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+      (while (/= arg 0)
+        (let ((this-win (window-buffer))
+              (next-win (window-buffer (funcall selector))))
+          (set-window-buffer (selected-window) next-win)
+          (set-window-buffer (funcall selector) this-win)
+          (select-window (funcall selector)))
+        (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+
+  (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
+  (ws-butler-global-mode)
+
+  (cua-mode t)
+  (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+  (transient-mark-mode 1) ;; No region when it is not highlighted
+  (setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
 
     ;;
     (setq cljr-warn-on-eval nil) ;; no warn on rename
 
    ;; cycle through buffers with Ctrl-Tab (like Firefox)
-   (global-set-key (kbd "<C-tab>") 'bury-buffer)
+  (global-set-key (kbd "<C-tab>") 'bury-buffer)
+  (global-set-key (kbd "<C-f4>") 'kill-this-buffer)
+  (global-set-key (kbd "<M-f4>") 'save-buffers-kill-terminal)
+  (global-set-key (kbd "C-n") 'spacemacs/new-empty-buffer)
+  (global-set-key (kbd "C-o") 'helm-find-files)
+  (global-set-key (kbd "C-s") 'save-buffer)
+  (global-set-key (kbd "C-y") 'redo)
+  (global-set-key (kbd "C-z") 'undo)
 
-   (global-set-key (kbd "<C-f4>") 'kill-this-buffer)
-   (global-set-key (kbd "<M-f4>") 'save-buffers-kill-terminal)
-   (global-set-key (kbd "C-a") 'mark-whole-buffer)
-   (global-set-key (kbd "C-n") 'spacemacs/new-empty-buffer)
-   (global-set-key (kbd "C-o") 'ido-find-file)
-   (global-set-key (kbd "C-s") 'save-buffer)
-   (global-set-key (kbd "C-y") 'redo)
-   (global-set-key (kbd "C-z") 'undo)
+  (setq cljr-warn-on-eval nil)
+  (setq markdown-command-needs-filename 't)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;; one line at a time
 
-   (setq markdown-command-needs-filename 't)
-   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;; one line at a time
+  ;; add to
+  ;; ./elpa/clojure-mode-20170407.312/clojure-mode.el
+  (setq clojure-symbols-list '(lambda ()
+                                (mapc (lambda (pair) (push pair prettify-symbols-alist))
+                                      '(("fn"  . ?λ)
+                                        ("true". ?т)
+                                        ("false".?ғ )
+                                        ("partial". ?Ƥ)
+                                        ("for". ?∀)
+                                        ("not=". ?≠)
+                                        ("nil". ?Ø)
+                                        ("->". ?→)
+                                        ("some?". ?∃)
+                                        ("->>". ?⮆))
+                                      )))
 
-)
+  (add-hook 'clojure-mode-hook clojure-symbols-list)
+  (add-hook 'clojure-mode-hook (lambda () (cua-mode t)))
+  (add-hook 'focus-in-hook (lambda () (cua-mode t)))
+  (global-prettify-symbols-mode 1)
+  (spacemacs/toggle-automatic-symbol-highlight-on)
+  (add-hook 'yaml-mode-hook (lambda ()
+                              (highlight-indentation-mode)
+                              (set-face-background 'highlight-indentation-face "#004d00")))
+  )
+
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -404,17 +462,31 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ahs-idle-interval 1.0)
+ '(column-number-mode t)
+ '(cua-mode t nil (cua-base))
  '(evil-toggle-key "C-`")
  '(evil-want-Y-yank-to-eol nil)
  '(js2-bounce-indent-p t)
  '(js2-missing-semi-one-line-override nil)
  '(js2-strict-missing-semi-warning nil)
+ '(org-export-async-init-file
+   "/home/mark/.emacs.d/layers/+emacs/org/local/org-async-init.el" t)
+ '(org-export-with-toc nil)
+ '(org-file-apps
+   (quote
+    ((auto-mode . emacs)
+     ("\\.mm\\'" . default)
+     ("\\.x?html?\\'" . default)
+     ("\\.pdf\\'" . "evince %s"))))
  '(package-selected-packages
    (quote
-    (adaptive-wrap seq cider cider-eval-sexp-fu queue peg winum unfill fuzzy yapfify yaml-mode toml-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake racer pos-tip pyvenv pytest pyenv-mode py-isort pip-requirements minitest markdown-toc live-py-mode hy-mode helm-pydoc go-guru go-eldoc gh-md transient cython-mode company-go go-mode company-anaconda lv parseedn parseclj a chruby cargo markdown-mode rust-mode bundler inf-ruby anaconda-mode pythonic web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data smeargle orgit org mwim magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor company-statistics company clojure-snippets clj-refactor inflections edn multiple-cursors paredit clojure-mode auto-yasnippet yasnippet ac-ispell auto-complete ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme)))
+    (slime-company slime common-lisp-snippets tide typescript-mode string-inflection transient cython-mode csv-mode company-go go-mode company-anaconda lv sesman parseedn parseclj a chruby cargo markdown-mode rust-mode bundler inf-ruby anaconda-mode pythonic nginx-mode ob-elixir flycheck-mix flycheck-credo flycheck alchemist elixir-mode yapfify yaml-mode winum unfill toml-mode sql-indent rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake racer pos-tip pyvenv pytest pyenv-mode py-isort pip-requirements org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mmm-mode minitest markdown-toc live-py-mode hy-mode htmlize helm-pydoc go-guru go-eldoc gnuplot gh-md fuzzy clj-refactor project-persist-drawer voca-builder company-irony-c-headers color-identifiers-mode helm-cider-history helm-cider ac-cider cider-eval-sexp-fu cider-hydra cider cider-decompile web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data smeargle orgit org mwim magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor company-statistics company clojure-snippets inflections edn multiple-cursors paredit peg queue clojure-mode auto-yasnippet yasnippet ac-ispell auto-complete ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme)))
  '(safe-local-variable-values
    (quote
-    ((eval define-clojure-indent
+    ((ffip-patterns "*.org" "*.rb" "*.sh" "*.md" "*.css" "*.scss" "Rakefile" "Procfile" "Capfile" "*.sql" "*.json" "*.haml" "*.js")
+     (ffip-find-options . "-not -regex \".*out-.*\"")
+     (eval define-clojure-indent
            (ANY
             (quote defun)))
      (eval define-clojure-indent
@@ -428,10 +500,12 @@ you should place your code here."
             (quote defun)))
      (eval define-clojure-indent
            (GET
-            (quote defun)))))))
-(custom-set-faces
+            (quote defun))))))
+ '(tool-bar-mode nil))
+
+     (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "Consolas" :foundry "MS  " :slant normal :weight normal :height 151 :width normal)))))

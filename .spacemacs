@@ -271,7 +271,7 @@ values."
    ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
    ;; derivatives. If set to `relative', also turns on relative line numbers.
    ;; (default nil)
-   dotspacemacs-line-numbers t
+   dotspacemacs-line-numbers nil
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -452,7 +452,11 @@ you should place your code here."
   (add-hook 'yaml-mode-hook (lambda ()
                               (highlight-indentation-mode)
                               (set-face-background 'highlight-indentation-face "#004d00")))
+  (global-display-line-numbers-mode)
+
   )
+
+
 
 
 ;; Do not write anything past this comment. This is where Emacs will

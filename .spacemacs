@@ -403,6 +403,26 @@ you should place your code here."
   )
 
 
+  (defvar my-flip-symbol-alist
+  '(("true" . "false")
+    ("false" . "true")
+    (0 . 1)
+    (1 . 0)
+    ("begin" . "end")
+    ("end" . "begin")
+    ))
+
+
+  (defun my-flip-symbol ()
+    "\"I don't want to type here, just do it for me.\""
+    (interactive)
+    (-let* (((beg . end) (bounds-of-thing-at-point 'symbol))
+            (sym (buffer-substring-no-properties beg end)))
+      (when (member sym (cl-loop for cell in my-flip-symbol-alist
+                                 collect (car cell)))
+        (delete-region beg end)
+        (insert (alist-get sym my-flip-symbol-alist "" nil 'equal)))))
+
   (defun transpose-buffers (arg)
     "Transpose the buffers shown in two windows."
     (interactive "p")
@@ -419,6 +439,10 @@ you should place your code here."
   (ws-butler-global-mode)
 
   (global-display-line-numbers-mode 1)
+
+  ;; undo tree is too slow to use.
+  (global-undo-tree-mode -1)
+  (evil-set-undo-system 'undo-redo)
 
 ;  (cua-mode t)
   (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
@@ -438,6 +462,7 @@ you should place your code here."
   (global-set-key (kbd "C-s") 'save-buffer)
   (global-set-key (kbd "C-y") 'redo)
   (global-set-key (kbd "C-z") 'undo)
+  (global-set-key (kbd "C-c C-/") 'my-flip-symbol )
 
   (setq cljr-warn-on-eval nil)
   (setq markdown-command-needs-filename 't)
@@ -502,6 +527,7 @@ you should place your code here."
 
   (add-hook 'prog-mode-hook 'copilot-mode)
   )
+
 
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -591,7 +617,7 @@ This function is called at the very end of Spacemacs initialization."
      ("\\.x?html?\\'" . default)
      ("\\.pdf\\'" . "evince %s")))
  '(package-selected-packages
-   '(add-node-modules-path import-js grizzl rjsx-mode treemacs lsp-treemacs lsp-ui lsp-mode slime-company slime common-lisp-snippets tide typescript-mode string-inflection transient cython-mode csv-mode company-go go-mode company-anaconda lv sesman parseedn parseclj a chruby cargo markdown-mode rust-mode bundler inf-ruby anaconda-mode pythonic nginx-mode ob-elixir alchemist elixir-mode yapfify yaml-mode winum unfill toml-mode sql-indent rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake racer pos-tip pyvenv pytest pyenv-mode py-isort pip-requirements org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mmm-mode minitest markdown-toc live-py-mode hy-mode htmlize helm-pydoc go-guru go-eldoc gnuplot gh-md fuzzy clj-refactor project-persist-drawer voca-builder company-irony-c-headers color-identifiers-mode helm-cider-history helm-cider ac-cider cider-eval-sexp-fu cider-hydra cider cider-decompile web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data smeargle orgit org mwim magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor company-statistics company clojure-snippets inflections edn multiple-cursors paredit peg queue clojure-mode auto-yasnippet yasnippet ac-ispell auto-complete ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme))
+   '(parrot treemacs lsp-treemacs lsp-ui lsp-mode slime-company slime common-lisp-snippets tide typescript-mode string-inflection transient cython-mode csv-mode company-go go-mode company-anaconda lv sesman parseedn parseclj a chruby cargo markdown-mode rust-mode bundler inf-ruby anaconda-mode pythonic nginx-mode ob-elixir alchemist elixir-mode yapfify yaml-mode winum unfill toml-mode sql-indent rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake racer pos-tip pyvenv pytest pyenv-mode py-isort pip-requirements org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mmm-mode minitest markdown-toc live-py-mode hy-mode htmlize helm-pydoc go-guru go-eldoc gnuplot gh-md fuzzy clj-refactor project-persist-drawer voca-builder company-irony-c-headers color-identifiers-mode helm-cider-history helm-cider ac-cider cider-eval-sexp-fu cider-hydra cider cider-decompile web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data smeargle orgit org mwim magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor company-statistics company clojure-snippets inflections edn multiple-cursors paredit peg queue clojure-mode auto-yasnippet yasnippet ac-ispell auto-complete ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme))
  '(safe-local-variable-values
    '((ffip-patterns "*.org" "*.rb" "*.sh" "*.md" "*.css" "*.scss" "Rakefile" "Procfile" "Capfile" "*.sql" "*.json" "*.haml" "*.js")
      (ffip-find-options . "-not -regex \".*out-.*\"")

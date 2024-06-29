@@ -77,15 +77,16 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
                                       string-inflection
+                                      ellama
                                       lsp-mode
                                       fireplace
                                       auto-complete
                                       restclient
                                       all-the-icons
-                                      (copilot :location (recipe
-                                                          :fetcher github
-                                                          :repo "zerolfx/copilot.el"
-                                                          :files ("*.el" "dist")))
+                                      ;; (copilot :location (recipe
+                                      ;;                     :fetcher github
+                                      ;;                     :repo "zerolfx/copilot.el"
+                                      ;;                    :files ("*.el" "dist")))
                                         ;lsp-ui
                                         ;lsp-treemacs
                                       flycheck
@@ -402,6 +403,15 @@ you should place your code here."
   (kill-emacs)
   )
 
+
+;; ellama
+
+(use-package ellama
+  :init
+  ;; setup key bindings
+  (setopt ellama-keymap-prefix "C-c e")
+  (require 'llm-ollama)
+  )
 
   (defvar my-flip-symbol-alist
   '(("true" . "false")

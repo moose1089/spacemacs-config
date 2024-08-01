@@ -498,8 +498,8 @@ you should place your code here."
   (setq clojure-symbols-list '(lambda ()
                                 (mapc (lambda (pair) (push pair prettify-symbols-alist))
                                       '(("fn"  . ?λ)
-                                        ("true". ?т)
-                                        ("false".?ғ )
+                                        ("true". ?⊤)
+                                        ("false".?⊥)
                                         ("partial". ?Ƥ)
                                         ;("for". ?∀)
                                         ("not=". ?≠)
@@ -514,29 +514,33 @@ you should place your code here."
   (add-hook 'clojure-mode-hook clojure-symbols-list)
   (add-hook 'clojure-mode-hook (lambda () (cua-mode t)))
   (add-hook 'focus-in-hook (lambda () (cua-mode t)))
-  (add-hook 'clojure-mode-hook (lambda () auto-highlight-symbol-mode))
+  (add-hook 'clojure-mode-hook (lambda () (auto-highlight-symbol-mode)))
   (global-prettify-symbols-mode 1)
   (spacemacs/toggle-automatic-symbol-highlight-on)
   (add-hook 'yaml-mode-hook (lambda ()
                               (highlight-indentation-mode)
                               (set-face-background 'highlight-indentation-face "#004d00")))
 
+  (add-hook 'prog-mode-hook 'smartparens-strict-mode)
+
   ;; accept completion from copilot and fallback to company
   (with-eval-after-load 'company
     ;; disable inline previews
     (delq 'company-preview-if-just-one-frontend company-frontends))
 
-  (with-eval-after-load 'copilot
-    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-    (define-key copilot-completion-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
-    (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word))
+  ;; (with-eval-after-load 'copilot
+  ;;   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  ;;   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+  ;;   (define-key copilot-completion-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
+  ;;   (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word))
 
-  (global-set-key (kbd "C-!") 'copilot-complete)
-  (global-set-key (kbd "C-\"") 'copilot-next-completion)
+  ;; (global-set-key (kbd "C-!") 'copilot-complete)
+  ;; (global-set-key (kbd "C-\"") 'copilot-next-completion)
 
-  (add-hook 'prog-mode-hook 'copilot-mode)
+  ;; (add-hook 'prog-mode-hook 'copilot-mode)
+
   )
+
 
 
 

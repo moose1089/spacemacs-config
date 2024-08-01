@@ -91,7 +91,7 @@ values."
                                       ;;                    :files ("*.el" "dist")))
                                         ;lsp-ui
                                         ;lsp-treemacs
-                                      flycheck
+                                      ;;flycheck
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -175,7 +175,7 @@ values."
 
    dotspacemacs-default-font '("MonaspaceNeon"
                                :size 22
-                               :weight normal
+                               :weight light
                                :width normal
                                :powerline-scale 2.0)
 
@@ -424,6 +424,10 @@ you should place your code here."
     ))
 
 
+  (defun fix-font ()
+    (interactive)
+    (set-frame-font "-UKWN-Monaspace Neon-light-normal-normal-*-25-*-*-*-m-0-fontset-auto5" nil t))
+
   (defun my-flip-symbol ()
     "\"I don't want to type here, just do it for me.\""
     (interactive)
@@ -484,7 +488,19 @@ you should place your code here."
   ;; (setq lsp-lens-enable t)
   ;; (setq lsp-log-io t)
   (setq lsp-keymap-prefix "M-s-l")
-  ;(setq gc-cons-threshold (* 100 1024 1024))
+
+  (setq gc-cons-threshold (* 1024 1024 1024))
+  (defmacro k-time (&rest body)
+    "Measure and return the time it takes evaluating BODY."
+    `(let ((time (current-time)))
+       ,@body
+       (float-time (time-since time))))
+
+  (run-with-idle-timer 15 t
+                       (lambda ()
+                         (message "Garbage Collector has run for %.06fsec"
+                                  (k-time (garbage-collect)))))
+
   ;; (setq gc-cons-threshold (* 100 1024 1024)
   ;;       read-process-output-max (* 1024 1024)
   ;;       treemacs-space-between-root-nodes nil

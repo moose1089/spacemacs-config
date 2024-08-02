@@ -489,16 +489,16 @@ you should place your code here."
   ;; (setq lsp-log-io t)
   (setq lsp-keymap-prefix "M-s-l")
 
-  (setq gc-cons-threshold (* 1024 1024 1024))
+  (setq gc-cons-threshold (* 2 1024 1024 1024))
   (defmacro k-time (&rest body)
     "Measure and return the time it takes evaluating BODY."
     `(let ((time (current-time)))
        ,@body
        (float-time (time-since time))))
 
-  (run-with-idle-timer 15 t
+  (run-with-idle-timer 10 t
                        (lambda ()
-                         (message "Garbage Collector has run for %.06fsec"
+                         (message "Garbage Collector has run for %.03fsec"
                                   (k-time (garbage-collect)))))
 
   ;; (setq gc-cons-threshold (* 100 1024 1024)

@@ -533,6 +533,7 @@ you should place your code here."
   (add-hook 'clojure-mode-hook (lambda () (cua-mode t)))
   (add-hook 'focus-in-hook (lambda () (cua-mode t)))
   (add-hook 'clojure-mode-hook (lambda () (auto-highlight-symbol-mode)))
+  (add-hook 'typescript-mode-hook (lambda () (auto-highlight-symbol-mode)))
   (global-prettify-symbols-mode 1)
   (spacemacs/toggle-automatic-symbol-highlight-on)
   (add-hook 'yaml-mode-hook (lambda ()

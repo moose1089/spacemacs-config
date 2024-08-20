@@ -479,15 +479,22 @@ you should place your code here."
   (global-set-key (kbd "C-z") 'undo)
   (global-set-key (kbd "C-c C-/") 'my-flip-symbol )
 
+
+  ;; abbrevs - fix
+  (define-abbrev global-abbrev-table "#li" "(log/info )")
+
+
   (setq cljr-warn-on-eval nil)
   (setq markdown-command-needs-filename 't)
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;; one line at a time
 
   ;; lsp config
-  ;; (add-hook 'clojure-mode-hook 'lsp)
+  (add-hook 'clojure-mode-hook 'lsp)
   ;; (setq lsp-lens-enable t)
   ;; (setq lsp-log-io t)
   (setq lsp-keymap-prefix "M-s-l")
+  (use-package lsp-mode
+    :custom (lsp-semgrep-languages '()))
 
   (setq gc-cons-threshold (* 2 1024 1024 1024))
   (defmacro k-time (&rest body)
@@ -495,6 +502,7 @@ you should place your code here."
     `(let ((time (current-time)))
        ,@body
        (float-time (time-since time))))
+
 
   (run-with-idle-timer 10 t
                        (lambda ()

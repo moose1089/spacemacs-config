@@ -415,9 +415,11 @@ you should place your code here."
     )
 
   (defvar my-flip-symbol-alist
-  '(("true" . "false")
-    ("false" . "true")
-    (0 . 1)
+    '(("true" . "false")
+      ("false" . "true")
+      ("True" . "False")
+      ("False" . "True")
+      (0 . 1)
     (1 . 0)
     ("begin" . "end")
     ("end" . "begin")

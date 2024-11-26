@@ -416,6 +416,8 @@ you should place your code here."
   '(("true" . "false")
     ("false" . "true")
     ("read" . "write")
+    ("True" . "False")
+    ("False" . "True")
     ("rollback" . "commit")
     ("commit" . "rollback")
     (0 . 1)

@@ -510,6 +510,18 @@ you should place your code here."
   (use-package lsp-mode
     :custom (lsp-semgrep-languages '()))
 
+
+
+  ;; ollama gptel
+  ;; (setq
+  ;;  gptel-model 'ollama:latest
+  ;; gptel-backend)
+  ;; (gptel-make-ollama "ollama"             ;Any name of your choosing
+  ;;   :host "localhost:11434"               ;Where it's running
+  ;;   :stream t                             ;Stream responses
+  ;;   :models '(codestral:latest))          ;List of models
+
+
   (setq gc-cons-threshold (* 2 1024 1024 1024))
   (defmacro k-time (&rest body)
     "Measure and return the time it takes evaluating BODY."

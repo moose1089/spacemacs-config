@@ -175,7 +175,7 @@ values."
                                :size 22
                                :weight light
                                :width normal
-                               :powerline-scale 2.0)
+                               :powerline-scale 3.0)
 
    ;; The leader key
    dotspacemacs-leader-key "SPC"

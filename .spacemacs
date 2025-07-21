@@ -423,11 +423,20 @@ you should place your code here."
     ("read" . "write")
     ("rollback" . "commit")
     ("commit" . "rollback")
+    ("ROLLBACK" . "COMMIT")
+    ("COMMIT" . "ROLLBACK")
     ("production" . "staging")
     ("staging" . "development")
     ("development" . "production")
+    ("TRUE" . "FALSE")
+    ("FALSE" . "TRUE")
+    ("TODO" . "DONE")
+    ("DONE" . "TODO")
     (0 . 1)
     (1 . 0)
+    ("electricity" . "gas")
+    ("dual-fuel" . "electricity")
+    ("gas" . "dual-fuel")
     ("begin" . "end")
     ("end" . "begin")
     ))
@@ -531,7 +540,7 @@ you should place your code here."
        ,@body
        (float-time (time-since time))))
 
-  (run-with-idle-timer 30 t
+  (run-with-idle-timer 5 t
                        (lambda ()
                          (message "Garbage Collector has run for %.03fsec"
                                   (k-time (garbage-collect)))))
